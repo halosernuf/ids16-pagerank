@@ -31,7 +31,7 @@ public class RankCalculate {
 	public static class RankCalculateReduce extends Reducer<Text, Text, Text, Text> {
 	    private static final float damping = 0.85F;
 	    public void reduce(Text key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
-	        float sumShareOtherPageRanks = 0;
+	    	Double sumShareOtherPageRanks = (double) 0;
 	        String links="";
 	        for(Text val:values){
 	        	if(val.toString().startsWith("|")){
@@ -39,11 +39,11 @@ public class RankCalculate {
 	        		continue;
 	        	}
 	        	StringTokenizer itr = new StringTokenizer(val.toString());
-	        	float pageRank= Float.valueOf(itr.nextToken());
+	        	Double pageRank= Double.valueOf(itr.nextToken());
 	        	int outLinks = Integer.valueOf(itr.nextToken());
 	        	sumShareOtherPageRanks += (pageRank/outLinks);
 	        }
-	        float newRank = damping * sumShareOtherPageRanks + (1-damping);
+	        Double newRank = damping * sumShareOtherPageRanks + (1-damping);
 	        context.write(key, new Text(newRank+"\t"+links));
 	    }
 	}
